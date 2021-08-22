@@ -2,13 +2,16 @@
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 } */
-
+@font-face {
+  font-family: 'HiMelody';
+  src: url('../fonts/HiMelody-Regular.ttf') format('truetype');
+}
 a {
   color: #00B7FF;
 }
 
 body {
-  background: #222;
+  background: rgb(72, 164, 121);
 }
 
 * {
@@ -30,6 +33,7 @@ body {
 }
 .message {
   margin-bottom: 10px;
+  font-family: 'HiMelody';
 }
 .message .messageText {
   text-align: left;
