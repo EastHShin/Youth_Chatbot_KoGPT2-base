@@ -1,9 +1,11 @@
 # 청년 공감 챗봇
 
 ---
+[![Run on Ainize](https://ainize.ai/images/run_on_ainize_button.svg)](https://ainize.web.app/redirect?git_repo=https://github.com/EastHShin/Youth_Chatbot_KoGPT2-base)
 
 ## Overview
 ---
+![Chat](./image/Youth_Chat.png)
 
 청소년과 20대 청년이 마음 터놓고 고민을 말하고, 공감을 얻어 힐링할 수 있는 챗봇을 만들고자 하였습니다. 귀여운 미니언즈와 대화하며 힐링해보세요!
 
