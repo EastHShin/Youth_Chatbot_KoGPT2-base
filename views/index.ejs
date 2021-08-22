@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script type="text/javascript">
+    let time_obj = undefined;
+    let flag = undefined;
+    window.onload = () => {
+        time_obj = document.getElementById("timer");
+        flag = false;
+    };
+
+    function double_submit_check() {
+        if (flag) {
+            console.log("double");
+            return true;
+        } else {
+            flag = true;
+            return false;
+        }
+    }
+
+    function enterEvent(){
+      send_req();
+      
+    }
+    function get_localtime(){
+      const dateObj = new Date();
+      let hours = dateObj.getHours();
+      let minutes = dateObj.getMinutes();
+      if (parseInt(minutes) < 10){
+          minutes = "0" + minutes
+        }
+      let local_time = hours + ':' + minutes;
+      return local_time;
+    }
+    function add_div_usr(user, time){
+      let div = document.createElement('div');
+      let htmlstr = "";
+      htmlstr += 
+      "<div class='message sag mtLine'> <div class='messageText' data-time=" + time + ">"
+        + user +
+      "</div> <div class='resim' style=\"background-image: url('https://cdn.pixabay.com/photo/2016/02/22/08/51/paper-1214993_960_720.jpg');\"></div></div>"
+      div.innerHTML = htmlstr;
+      document.getElementById('chatbox').appendChild(div);
+    }
+    function add_div_bot(answer,time){
+      let div = document.createElement('div');
+      let htmlstr = "";
+      htmlstr += "<div class='message sol'> <div class='resim' style=\"background-image: url('https://cdn.pixabay.com/photo/2017/07/31/23/45/minion-2562071_960_720.png');\" ></div> <div class='messageText' data-time= " + time + ">"
+       + answer + "</div></div>";
+      div.innerHTML = htmlstr;
+      document.getElementById('chatbox').appendChild(div);
+    }
+    function send_req() {
+        if (double_submit_check()) {
+            return;
+        }
+
+        let chatting = document.getElementById("chat_input").value;
+        document.getElementById("chat_input").value = "";
+        
+        if (chatting == '') {
+            document.getElementById('warning').innerText = 'Please fill the text!';
+            flag = false;
+            return;
+        }
+        
+        const url = "/chat";
+        let start = 0;
+        let usr_localtime = get_localtime();
+        document.getElementById("loc-time").innerText = usr_localtime;
+        add_div_usr(chatting, usr_localtime);
+        // timer
+
+        timer = setInterval(() => {
+            start += 1;
+            time_obj.innerText = `${start / 10} 's`;
+        }, 100);
+        axios({
+          url: url,
+          method: 'post',
+          data: {
+            user: chatting
+          }
+        })
+        .then(response => {
+         clearInterval(timer);
+         time_obj.innerText = 'Done!';
+         flag = false;
+         let bot_localtime = get_localtime();
+         console.log(response.data );
+         add_div_bot(response.data['ans'],  bot_localtime);
+        })
+        .catch(err => {
+          clearInterval(timer);
+          flag = false;
+          document.getElementById('warning').innerText = err;
+        })
+    }
+    </script>
+      
+
+    </div>
+    <div class="time"><span id="loc-time">
+      <% const dateObj = new Date();
+      let hours = dateObj.getHours();
+      let minutes = dateObj.getMinutes();
+      if (parseInt(minutes) < 10){
+        minutes = "0" + minutes
+      }
+      let local_time = hours + ':' + minutes; %>
+      <%= local_time %> </span></div>
+  
+    <div class="chat-box" id="chatbox">
+      
+    </div>
+   
+    <div class="ref">
+
+      <p style="color: aliceblue; font-size: 25px;">Youth 상담 챗봇</p>
+      <p style="color: aliceblue; font-size: 22px;"> Open API :<a href="https://ainize.ai/EastHShin/Youth_Chatbot_KoGPT2-base_API?branch=main">On Ainize</a></p>
+      <p style="color: aliceblue; font-size: 22px;">Model : <a href="https://huggingface.co/EasthShin/Youth_Chatbot_Kogpt2-base">Workspace</a></p>
+      <p style="color: aliceblue; font-size: 22px;">Demo web Code : <a href="https://github.com/EastHShin/Youth_Chatbot_KoGPT2-base_API">Github</a></p>
+      </div>
+    <div class="inputBox">
+      <div class="text-box">
+        <textarea type="text" id="chat_input" placeholder="내용을 입력하세요." onkeypress="if(event.keyCode==13) enterEvent()" ></textarea>
+      </div>
+      <div class="button-box">
+        <button type="submit" class="btn btn-secondary" id="button" onclick="send_req()">Submit</button>
+        <label style="color: azure">Timer:&nbsp</label><label id="timer">0.0</label><br>
+        <b><label id="warning" style="color: red"></label> </b>
+      </div>
+    </div>
+  </body>
+</html>
